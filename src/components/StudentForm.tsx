@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from './ToastContext';
 
 type Student = {
   id?: string;
@@ -20,16 +21,17 @@ type Props = {
 
 export default function StudentForm({ initialData, isEditing = false }: Props) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const [formData, setFormData] = useState<Student>({
     firstName: initialData?.firstName || '',
     lastName: initialData?.lastName || '',
     email: initialData?.email || '',
     course: initialData?.course || '',
-    enrollmentDate: initialData?.enrollmentDate 
-      ? new Date(initialData.enrollmentDate).toISOString().split('T')[0] 
+    enrollmentDate: initialData?.enrollmentDate
+      ? new Date(initialData.enrollmentDate).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0],
     status: initialData?.status || 'Active',
   });
@@ -63,10 +65,10 @@ export default function StudentForm({ initialData, isEditing = false }: Props) {
     setLoading(true);
 
     try {
-      const url = isEditing && initialData?.id 
-        ? `/api/students/${initialData.id}` 
+      const url = isEditing && initialData?.id
+        ? `/api/students/${initialData.id}`
         : '/api/students';
-        
+
       const method = isEditing ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -82,10 +84,15 @@ export default function StudentForm({ initialData, isEditing = false }: Props) {
         throw new Error(errorData.error || 'Something went wrong');
       }
 
+      showToast(
+        isEditing ? 'Student updated successfully!' : 'Student created successfully!',
+        'success'
+      );
       router.push('/');
       router.refresh();
     } catch (err: any) {
       setError(err.message);
+      showToast(err.message, 'error');
     } finally {
       setLoading(false);
     }
@@ -94,83 +101,87 @@ export default function StudentForm({ initialData, isEditing = false }: Props) {
   return (
     <div className="glass-panel" style={{ maxWidth: '600px', margin: '0 auto' }}>
       <h2>{isEditing ? 'Edit Student' : 'Add New Student'}</h2>
-      {error && <div className="form-error" style={{ marginBottom: '1rem', padding: '0.75rem', background: 'var(--warning-bg)', borderRadius: '8px' }}>{error}</div>}
-      
+      {error && <div className="form-error" style={{ marginBottom: '1rem', padding: '0.75rem', background: 'var(--danger-bg)', borderRadius: '8px' }}>{error}</div>}
+
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <div className="form-group" style={{ flex: 1 }}>
             <label className="form-label" htmlFor="firstName">First Name *</label>
-            <input 
-              type="text" 
-              id="firstName" 
-              name="firstName" 
-              className="form-input" 
-              value={formData.firstName} 
-              onChange={handleChange} 
-              required 
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              className="form-input"
+              value={formData.firstName}
+              onChange={handleChange}
+              placeholder="e.g. John"
+              required
             />
           </div>
-          
+
           <div className="form-group" style={{ flex: 1 }}>
             <label className="form-label" htmlFor="lastName">Last Name *</label>
-            <input 
-              type="text" 
-              id="lastName" 
-              name="lastName" 
-              className="form-input" 
-              value={formData.lastName} 
-              onChange={handleChange} 
-              required 
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              className="form-input"
+              value={formData.lastName}
+              onChange={handleChange}
+              placeholder="e.g. Doe"
+              required
             />
           </div>
         </div>
 
         <div className="form-group">
           <label className="form-label" htmlFor="email">Email Address *</label>
-          <input 
-            type="email" 
-            id="email" 
-            name="email" 
-            className="form-input" 
-            value={formData.email} 
-            onChange={handleChange} 
-            required 
+          <input
+            type="email"
+            id="email"
+            name="email"
+            className="form-input"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="e.g. john@university.edu"
+            required
           />
         </div>
 
         <div className="form-group">
           <label className="form-label" htmlFor="course">Course/Major *</label>
-          <input 
-            type="text" 
-            id="course" 
-            name="course" 
-            className="form-input" 
-            value={formData.course} 
-            onChange={handleChange} 
-            required 
+          <input
+            type="text"
+            id="course"
+            name="course"
+            className="form-input"
+            value={formData.course}
+            onChange={handleChange}
+            placeholder="e.g. Computer Science"
+            required
           />
         </div>
 
         <div style={{ display: 'flex', gap: '1rem' }}>
           <div className="form-group" style={{ flex: 1 }}>
             <label className="form-label" htmlFor="enrollmentDate">Enrollment Date</label>
-            <input 
-              type="date" 
-              id="enrollmentDate" 
-              name="enrollmentDate" 
-              className="form-input" 
-              value={formData.enrollmentDate} 
-              onChange={handleChange} 
+            <input
+              type="date"
+              id="enrollmentDate"
+              name="enrollmentDate"
+              className="form-input"
+              value={formData.enrollmentDate}
+              onChange={handleChange}
             />
           </div>
 
           <div className="form-group" style={{ flex: 1 }}>
             <label className="form-label" htmlFor="status">Status</label>
-            <select 
-              id="status" 
-              name="status" 
-              className="form-input" 
-              value={formData.status} 
+            <select
+              id="status"
+              name="status"
+              className="form-input"
+              value={formData.status}
               onChange={handleChange}
             >
               <option value="Active">Active</option>

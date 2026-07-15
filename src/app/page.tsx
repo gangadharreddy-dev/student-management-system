@@ -1,7 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import Link from 'next/link';
-import DeleteButton from '@/components/DeleteButton';
-import { Student } from '@prisma/client';
+import StudentTable from '@/components/StudentTable';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,66 +8,66 @@ export default async function Dashboard() {
     orderBy: { createdAt: 'desc' },
   });
 
+  // Compute stats
+  const total = students.length;
+  const active = students.filter((s) => s.status === 'Active').length;
+  const inactive = students.filter((s) => s.status === 'Inactive').length;
+  const graduated = students.filter((s) => s.status === 'Graduated').length;
+
+  // Serialize dates for client component
+  const serialized = students.map((s) => ({
+    ...s,
+    enrollmentDate: s.enrollmentDate.toISOString(),
+    createdAt: s.createdAt.toISOString(),
+    updatedAt: s.updatedAt.toISOString(),
+  }));
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1>Student Dashboard</h1>
           <p>Manage your students, courses, and enrollments efficiently.</p>
         </div>
+        <a href="/api/students/export" className="btn btn-secondary">
+          <span>📥</span> Export Excel
+        </a>
       </div>
 
-      <div className="table-container">
-        {students.length === 0 ? (
-          <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📭</div>
-            <p>No students found. Add your first student to get started.</p>
-            <Link href="/students/new" className="btn btn-primary" style={{ marginTop: '1rem' }}>
-              + Add Student
-            </Link>
+      {/* Stats Cards */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-icon blue">👥</div>
+          <div className="stat-info">
+            <div className="stat-value">{total}</div>
+            <div className="stat-label">Total Students</div>
           </div>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Course</th>
-                <th>Enrollment Date</th>
-                <th>Status</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student: Student) => (
-                <tr key={student.id}>
-                  <td>
-                    <div style={{ fontWeight: 500 }}>{student.firstName} {student.lastName}</div>
-                  </td>
-                  <td>{student.email}</td>
-                  <td>{student.course}</td>
-                  <td>{student.enrollmentDate.toLocaleDateString()}</td>
-                  <td>
-                    <span className={`badge badge-${student.status.toLowerCase()}`}>
-                      {student.status}
-                    </span>
-                  </td>
-                  <td style={{ textAlign: 'right', display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                    <Link 
-                      href={`/students/${student.id}/edit`} 
-                      className="btn btn-secondary"
-                      style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}
-                    >
-                      Edit
-                    </Link>
-                    <DeleteButton id={student.id} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon green">✅</div>
+          <div className="stat-info">
+            <div className="stat-value">{active}</div>
+            <div className="stat-label">Active</div>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon yellow">⏸️</div>
+          <div className="stat-info">
+            <div className="stat-value">{inactive}</div>
+            <div className="stat-label">Inactive</div>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon purple">🎓</div>
+          <div className="stat-info">
+            <div className="stat-value">{graduated}</div>
+            <div className="stat-label">Graduated</div>
+          </div>
+        </div>
       </div>
+
+      {/* Student Table with Search/Filter/Sort */}
+      <StudentTable students={serialized} />
     </div>
   );
 }

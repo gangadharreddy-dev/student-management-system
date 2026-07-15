@@ -2,41 +2,57 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from './ToastContext';
+import ConfirmModal from './ConfirmModal';
 
 export default function DeleteButton({ id }: { id: string }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this student?')) return;
-    
+    setShowModal(false);
     setIsDeleting(true);
     try {
       const response = await fetch(`/api/students/${id}`, {
         method: 'DELETE',
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to delete');
       }
-      
+
+      showToast('Student deleted successfully.', 'success');
+      router.push('/');
       router.refresh();
-    } catch (error) {
-      console.error(error);
-      alert('Failed to delete student.');
+    } catch {
+      showToast('Failed to delete student.', 'error');
     } finally {
       setIsDeleting(false);
     }
   };
 
   return (
-    <button 
-      onClick={handleDelete} 
-      className="btn btn-danger" 
-      disabled={isDeleting}
-      style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}
-    >
-      {isDeleting ? '...' : 'Delete'}
-    </button>
+    <>
+      <button
+        onClick={() => setShowModal(true)}
+        className="btn btn-danger btn-sm"
+        disabled={isDeleting}
+      >
+        {isDeleting ? '...' : 'Delete'}
+      </button>
+
+      {showModal && (
+        <ConfirmModal
+          title="Delete Student"
+          message="Are you sure you want to delete this student? This action cannot be undone."
+          confirmLabel="Delete"
+          onConfirm={handleDelete}
+          onCancel={() => setShowModal(false)}
+          variant="danger"
+        />
+      )}
+    </>
   );
 }
