@@ -1,5 +1,8 @@
 # 🎓 Student Manager
 
+<img width="1470" height="835" alt="Screenshot 2026-07-15 at 9 28 16 AM" src="https://github.com/user-attachments/assets/783141bc-f650-4533-9298-57fc7679b997" />
+
+
 A premium, modern Student Management System built with **Next.js**, **Prisma**, and **Neon Serverless Postgres**. This application allows educators and administrators to manage student records, visualize status distributions, and export comprehensive reports.
 
 🔗 **Live Application:** [https://student-management-system-eta-indol.vercel.app/](https://student-management-system-eta-indol.vercel.app/)
@@ -22,12 +25,21 @@ A premium, modern Student Management System built with **Next.js**, **Prisma**, 
 *Below are placeholders where you can add your application screenshots:*
 
 ### 🖥️ Dashboard & Student List
-<!-- Replace the URL below with your actual screenshot path once uploaded -->
-![Dashboard Screenshot](https://via.placeholder.com/1200x600/1e293b/ffffff?text=Dashboard+Overview+and+Student+Table)
+
+<img width="1470" height="835" alt="Screenshot 2026-07-15 at 9 28 16 AM" src="https://github.com/user-attachments/assets/8dcda08a-f469-4041-ae18-bd778853466c" />
+
 
 ### 🌓 Dark/Light Mode Theme
-<!-- Replace the URL below with your actual screenshot path once uploaded -->
-![Theme Toggle Demonstration](https://via.placeholder.com/1200x600/0f172a/ffffff?text=Light+and+Dark+Mode+Comparison)
+
+<img width="1470" height="835" alt="Screenshot 2026-07-15 at 9 28 16 AM" src="https://github.com/user-attachments/assets/c1fa9cb9-ee7f-423a-a21f-c983595afba3" />
+
+<img width="1470" height="835" alt="Screenshot 2026-07-15 at 9 32 26 AM" src="https://github.com/user-attachments/assets/97a17ec0-57a2-425c-a590-8dd3a872a30b" />
+
+### Add Student
+
+<img width="1470" height="834" alt="Screenshot 2026-07-15 at 9 28 44 AM" src="https://github.com/user-attachments/assets/fc63f641-e9f6-4317-b6c5-fcb6c507a06d" />
+
+
 
 ---
 
