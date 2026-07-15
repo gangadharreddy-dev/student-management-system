@@ -5,7 +5,7 @@
 
 A premium, modern Student Management System built with **Next.js**, **Prisma**, and **Neon Serverless Postgres**. This application allows educators and administrators to manage student records, visualize status distributions, and export comprehensive reports.
 
-🔗 **Live Application:** [https://student-management-system-eta-indol.vercel.app/](https://student-management-system-eta-indol.vercel.app/)
+🔗 **Live Application:** [Click Here](https://student-management-system-eta-indol.vercel.app/)
 
 ---
 
